@@ -76,7 +76,7 @@ class UsersController extends AppController {
 
 	public function delete($id = null) {
 		if (!$this->request->is('post')) {
-			throw new MethodNotAllowedException('Debe usar Post');
+			throw new MethodNotAllowedException(__('Required Post'));
 		}
 		$this->User->id = $id;
 		if (!$this->User->exists()) {

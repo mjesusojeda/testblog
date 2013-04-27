@@ -6,6 +6,7 @@
 									'action' => 'add')
 						);  
 ?>
+
 <table>
 	<tr>
 		<th>Id</th>
@@ -29,7 +30,7 @@
 		<td><?= $post['Post']['created']; ?></td>
 		<td>
 			<?php
-				echo $this->Html->link('Edit', array(
+				echo $this->Html->link(__('Edit'), array(
 												'controller' => 'posts', 
 												'action' => 'edit',
 												$post['Post']['id'])
@@ -38,7 +39,7 @@
 			|
 			<?php
 				echo $this->Form->postlink(
-											'Del', 
+											__('Del'), 
 											array('action' => 'delete',$post['Post']['id']),
 											array('confirm' => 'esta usted seguro?')
 										);  
