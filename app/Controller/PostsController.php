@@ -22,7 +22,18 @@
 
 class PostsController extends AppController {
 	public $helpers = array('Html','Form', 'Session');
-	public $components = array('Session');
+	public $components = array(
+		'Session',
+		'Auth' => array(
+			'loginRedirect' => array('controller' => 'posts', 'action' => 'index'),
+			'logoutRedirect' => array('controller' => 'pages', 'action' => 'display', 'home')
+		)
+	);
+
+	public function beforeFilter() {
+		
+		//$this->Auth->allow('index', 'view');
+	}
 	
 	public function index(){
 		$this -> set('posts', $this->Post->find('all'));
@@ -33,15 +44,12 @@ class PostsController extends AppController {
 		$this -> set('post', $this->Post->read());
 	}
 	
-	public function add(){
-		if($this -> request -> is('post')){
-			$this -> Post -> create();
-			if($this -> Post -> save($this -> request -> data)){
-				$this -> Session -> setFlash('Tu post ha sido guardado');
-				$this -> redirect(array('action' => 'index'));
-			}
-			else{
-				$this -> Session -> setFlash('No se ha podido agregar tu post');
+	public function add() {
+		if ($this->request->is('post')) {
+			$this->request->data['Post']['user_id'] = $this->Auth->user('id'); //Added this line
+			if ($this->Post->save($this->request->data)) {
+				$this->Session->setFlash('Your post has been saved.');
+				$this->redirect(array('action' => 'index'));
 			}
 		}
 	}
@@ -71,4 +79,5 @@ class PostsController extends AppController {
 			$this -> redirect(array('action' => 'index'));
 		}
 	}
+
 }

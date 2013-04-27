@@ -21,14 +21,16 @@
  */
 
 class UsersController extends AppController {
+
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow('add');
 	}
 
 	public function index() {
-		$this->User->recursive = 0;
-		$this->set('users', $this->paginate());
+		//$this->User->recursive = 0;
+		//$this->set('users', $this->paginate());
+		$this->set('users', $this->User->find('all'));
 	}
 
 	public function view($id = null) {
@@ -57,6 +59,9 @@ class UsersController extends AppController {
 			throw new NotFoundException(__('Invalid user'));
 		}
 		if ($this->request->is('post') || $this->request->is('put')) {
+			if ($this->request->data['User']['password'] == '') {
+				unset($this->request->data['User']['password']); 
+			}
 			if ($this->User->save($this->request->data)) {
 				$this->Session->setFlash(__('The user has been saved'));
 				$this->redirect(array('action' => 'index'));
@@ -71,7 +76,7 @@ class UsersController extends AppController {
 
 	public function delete($id = null) {
 		if (!$this->request->is('post')) {
-			throw new MethodNotAllowedException();
+			throw new MethodNotAllowedException('Debe usar Post');
 		}
 		$this->User->id = $id;
 		if (!$this->User->exists()) {
@@ -84,4 +89,5 @@ class UsersController extends AppController {
 		$this->Session->setFlash(__('User was not deleted'));
 		$this->redirect(array('action' => 'index'));
 	}
+
 }
